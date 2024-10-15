@@ -1,0 +1,34 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@loadplug/backend/*": ["apps/backend/src/*"],
+      "@loadplug/cron/*": ["apps/cron/src/*"],
+      "@loadplug/frontend/*": ["apps/frontend/src/*"],
+      "@loadplug/helpers/*": ["libraries/helpers/src/*"],
+      "@loadplug/nestjs-libraries/*": ["libraries/nestjs-libraries/src/*"],
+      "@loadplug/react/*": ["libraries/react-shared-libraries/src/*"],
+      "@loadplug/plugins/*": ["libraries/plugins/src/*"],
+      "@loadplug/workers/*": ["apps/workers/src/*"],
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

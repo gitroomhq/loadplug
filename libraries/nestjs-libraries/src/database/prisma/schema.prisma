@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator fieldEncryptionMigrations {
+  provider     = "prisma-field-encryption"
+}
+
+model Organization {
+  id            String             @id @default(uuid())
+  name          String
+  description   String?
+  users         UserOrganization[]
+  paymentId     String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  notifications Notifications[]
+  subscription  Subscription?
+  key           String
+}
+
+model User {
+  id            String             @id @default(uuid())
+  email         String
+  password      String?
+  providerName  Provider
+  providerId    String?
+  name          String?
+  lastName      String?
+  isSuperAdmin  Boolean            @default(false)
+  organizations UserOrganization[]
+  timezone      Int
+  inviteId      String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  activated     Boolean            @default(true)
+  lastReadNotifications DateTime   @default(now())
+
+  @@unique([email, providerName])
+  @@index([inviteId])
+  @@index([lastReadNotifications])
+}
+
+model UserOrganization {
+  id             String       @id @default(uuid())
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  disabled       Boolean      @default(false)
+  role           Role         @default(USER)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([userId, organizationId])
+  @@index([disabled])
+}
+
+model Subscription {
+  id                String            @id @default(cuid())
+  organizationId    String            @unique
+  organization      Organization      @relation(fields: [organizationId], references: [id])
+  subscriptionTier  SubscriptionTier
+  identifier        String?
+  cancelAt          DateTime?
+  period            Period
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  deletedAt         DateTime?
+
+  @@index([organizationId])
+  @@index([deletedAt])
+}
+
+model Notifications {
+  id                String   @id @default(uuid())
+  organizationId    String
+  organization      Organization @relation(fields: [organizationId], references: [id])
+  content           String
+  link              String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  deletedAt         DateTime?
+
+  @@index([createdAt])
+  @@index([organizationId])
+  @@index([deletedAt])
+}
+
+enum SubscriptionTier {
+  STANDARD
+  PRO
+  TEAM
+  ULTIMATE
+}
+
+enum Period {
+  MONTHLY
+  YEARLY
+}
+
+enum Provider {
+  LOCAL
+  GITHUB
+  GOOGLE
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  USER
+}
